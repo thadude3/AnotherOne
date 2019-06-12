@@ -12,6 +12,8 @@ function showMenu()
 	addTextView(" Map")
 	spItems = {"Moonlight","Marsh", "Miglance Castle","Volcano","Xeno-Domain","Tower of Stars","Dragon Palace"}
 	addSpinner("spValue", spItems, spItems[1])
+	diffItems = {"Hard","Very Hard"}
+	addSpinner("diffValue",diffItems,diffItems[1])
 	addSeparator()
 	addTextView(" Advanced Dungeon Options")
 	newRow()
@@ -48,60 +50,67 @@ function runDungeon()
 	setStopMessage("Finished Running Dungeons")
  y = 0
    while(y < numReplay) do
-   useMaptoSpace()
+	useMaptoSpace()
     if(cbValue) then
 		wait(3)
 		getFood()   
 		wait(3)
 	end
 	if(not cbMap) then
-	-- Move to door for map selection
-	moveLeft(1)
-	existsClick(Pattern("doorq.png"),5)
+		-- Move to door for map selection
+		moveLeft(1)
+		existsClick(Pattern("doorq.png"),5)
 	end		
     if(spValue == "Moonlight") then 
-    require(scriptPath() .."Moonlight")
-	if(not cbMap) then
-		moveToMoonlight()
-	end
+		require(scriptPath() .."Moonlight")
+		if(not cbMap) then
+			moveToMoonlight()
+		end
 	elseif(spValue == "Marsh") then
-	require(scriptPath() .."Marsh")
-	if(not cbMap) then
-		moveToMarsh()	
-	end
+		require(scriptPath() .."Marsh")
+		if(not cbMap) then
+			moveToMarsh()	
+		end
 	elseif(spValue == "Miglance Castle") then
-	require(scriptPath() .."Miglance")
-	if(not cbMap) then
-		moveToMiglance()
-	end
+		require(scriptPath() .."Miglance")
+		if(not cbMap) then
+			moveToMiglance()
+		end
 	elseif(spValue == "Volcano") then
-	require(scriptPath() .."Volcano")
-	if(not cbMap) then
-		moveToVolcano()
-	end
+		require(scriptPath() .."Volcano")
+		if(not cbMap) then
+			moveToVolcano()
+		end
 	elseif(spValue == "Xeno-Domain") then
-	require(scriptPath() .."Xeno")
-	if(not cbMap) then
-		moveToXeno()
-	end 
+		require(scriptPath() .."Xeno")
+		if(not cbMap) then
+			moveToXeno()
+		end 
 	elseif(spValue == "Tower of Stars") then
-	require(scriptPath() .."Stars")
-	if(not cbMap) then
-		moveToStars()
-	end
+		require(scriptPath() .."Stars")
+		if(not cbMap) then
+			moveToStars()
+		end
 	elseif(spValue == "Dragon Palace") then
-	require(scriptPath() .."Dragon")
-	if(not cbMap) then
-		moveToDragon()
+		require(scriptPath() .."Dragon")
+		if(not cbMap) then
+			moveToDragon()
+		end
 	end
    -- select difficulty eventually
     if(not cbMap) then
-		existsClick(Pattern("hardv3.png"),5)
-		existsClick(Pattern("move.png"),5)
-		wait(5)
+		if(diffValue == "Hard") then
+			debugToast("Clicking Hard")
+			existsClick(Pattern("hardv3.png"),5)
+		elseif(diffValue == "Very Hard") then
+			debugToast("Clicking Very Hard")
+			existsClick(Pattern("vhard.png"),5)
+		end
 	end
-   -- Detect if in dungeon and start
-   end
+	existsClick(Pattern("move.png"),5)
+	wait(5)
+	
+   -- Detect if in dungeon and start  
 	x = numFloor
       while(x <= getFloorCount())
       do
@@ -115,11 +124,14 @@ function runDungeon()
 		cbMap = false
       end
 	wait(10)
-	simpleClick(3)
+	simpleClick(2)
 	y = y+1
-	existsClick(Pattern("congrat.png"),4)
-	existsClick(Pattern("congrat.png"),4)
+	--existsClick(Pattern("congrat.png"),4)
+	--TODO check for gate and run the gate?
+	
+	--existsClick(Pattern("congrat.png"):similar(0.6),4)
 	wait(5)	
+	simpleClick(2)
 
    end 
    end

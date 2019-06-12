@@ -13,9 +13,10 @@ char1Loc = Location(90,650)
 char2Loc = Location(264,650)
 char3Loc = Location(430,650)
 char4Loc = Location(600,650)
+char5Loc = Location(800,650)
 -- Move locations
 fourthMove = Location(890,540)
-   	  
+switchMove = Location(1100,540)   	  
 -- Regions
 battleRegion = Region(1060,510,240,240)
 menuRegion = Region(10,510,340,200)
@@ -61,7 +62,28 @@ function moveToMoonlight()
 	debugToast("Moving to Moonlight")	
 	--maybe loop and swipe around until clicked?
 	existsClick(Pattern("pres.png"),5)
-	existsClick(Pattern("moon.png"),5)
+	wait(2)
+  for i = 0,4 do
+	wait(2)
+	if(not existsClick(Pattern("moon.png"),5)) then
+		if(i == 0) then
+			mapMoveUp(500)
+		end
+		if(i == 1) then
+			mapMoveDown(500)
+		end
+		if(i == 2) then
+			mapMoveLeft(500)
+		end
+		if(i == 3) then
+			mapMoveRight(500)
+		end
+		wait(1)
+	else
+		break
+	end
+	
+  end		
 end
 
 function moveToMarsh()
@@ -86,7 +108,9 @@ function moveToXeno()
 	debugToast("Moving to Xeno-Domain")
 	existsClick(Pattern("fut.png"),5)
 	--Loop 4 times, break on success. 
+	wait(2)
   for i = 0,4 do
+	wait(2)
 	if(not existsClick(Pattern("xeno.png"),5)) then
 		if(i == 0) then
 			mapMoveUp(500)
@@ -111,8 +135,10 @@ function moveToStars()
 	debugToast("Moving to Tower of Stars")
 	existsClick(Pattern("anti.png"),5)
 	--Loop 4 times, break on success. 
+	wait(2)
   for i = 0,4 do
-	if(not existsClick(Pattern("stars.png"),5)) then
+	wait(2)
+	if(not existsClick(Pattern("stars.png"):similar(0.8),5)) then
 		if(i == 0) then
 			mapMoveUp(500)
 		end
@@ -136,8 +162,10 @@ function moveToDragon()
 	debugToast("Moving to Dragon Palace")
 	existsClick(Pattern("anti.png"),5)
 	--Loop 4 times, break on success. 
+ 	wait(2)
   for i = 0,4 do
-	if(not existsClick(Pattern("dp1.png"),5)) then
+	wait(2)
+	if(not existsClick(Pattern("dp1a.png"),5)) then
 		if(i == 0) then
 			mapMoveUp(500)
 		end
@@ -192,7 +220,8 @@ end
 
 function useUltimate()
 debugToast("Using Ultimate")
-ultButtonRegion:existsClick(Pattern("ultbutton.png"))
+--ultButtonRegion:existsClick(Pattern("ultbutton.png"))
+click(ultButtonRegion)
 actionList = {	
 {action = "touchDown", target = fourthMove},
 {action = "touchUp", target = fourthMove},
@@ -205,7 +234,7 @@ actionList = {
 {action = "wait", target = 0.1},
 {action = "touchDown", target = fourthMove},
 {action = "touchUp", target = fourthMove},
-
+{action = "wait", target = 0.4},
 {action = "touchDown", target = fourthMove},
 {action = "touchUp", target = fourthMove},
 {action = "wait", target = 0.1},
@@ -217,7 +246,7 @@ actionList = {
 {action = "wait", target = 0.1},
 {action = "touchDown", target = fourthMove},
 {action = "touchUp", target = fourthMove},
-
+{action = "wait", target = 0.4},
 {action = "touchDown", target = fourthMove},
 {action = "touchUp", target = fourthMove},
 {action = "wait", target = 0.1},
@@ -229,7 +258,7 @@ actionList = {
 {action = "wait", target = 0.1},
 {action = "touchDown", target = fourthMove},
 {action = "touchUp", target = fourthMove},
-
+{action = "wait", target = 0.4},
 {action = "touchDown", target = fourthMove},
 {action = "touchUp", target = fourthMove},
 {action = "wait", target = 0.1},
@@ -241,7 +270,19 @@ actionList = {
 {action = "wait", target = 0.1},
 {action = "touchDown", target = fourthMove},
 {action = "touchUp", target = fourthMove},
-
+{action = "wait", target = 0.4},
+{action = "touchDown", target = fourthMove},
+{action = "touchUp", target = fourthMove},
+{action = "wait", target = 0.1},
+{action = "touchDown", target = fourthMove},
+{action = "touchUp", target = fourthMove},
+{action = "wait", target = 0.1},
+{action = "touchDown", target = fourthMove},
+{action = "touchUp", target = fourthMove},
+{action = "wait", target = 0.1},
+{action = "touchDown", target = fourthMove},
+{action = "touchUp", target = fourthMove},
+{action = "wait", target = 0.4},
 {action = "touchDown", target = fourthMove},
 {action = "touchUp", target = fourthMove},
 {action = "wait", target = 0.1},
@@ -253,6 +294,7 @@ actionList = {
 {action = "wait", target = 0.1},
 {action = "touchDown", target = fourthMove},
 {action = "touchUp", target = fourthMove}
+
 }
 manualTouch(actionList)
 
@@ -266,17 +308,23 @@ debugToast("Doing Battle")
    currentTime = os.time()
    elapsedTime = 0
    while true do
+	
    	   if(battleRegion:exists(battleButton,2)) then
-   	     useAbilities()
+			turn = turn+1
+			debugToast("On turn ".. turn)
+			useAbilities()
+		 if(turn >= 5) then
+			switchFirst()
+			turn = 0
+		 end
 		 simpleClick(1)
 		 currentTime = os.time()
-		if(ultimateRegion:exists(Pattern("ultfull.png"):similar(0.95))) then
+		if(ultimateRegion:exists(Pattern("ultfull.png"):similar(0.85))) then
 			useUltimate()
 		end
 		battleRegion:existsClick(battleButton)
    	   end
-			    
-	    turn = turn+1
+	    
 		if(itemRegion:existsClick(Pattern("items.png",1):similar(0.7))) then			
 			break
 	    end
@@ -290,6 +338,23 @@ debugToast("Doing Battle")
 	end
 	--finished battling wait for dilogs to disappear before moving again.
 	wait(3)
+end
+
+function switchFirst()
+debugToast("Switching Characters")
+actionList = {
+	{action = "touchDown", target = char1Loc},
+	{action = "touchUp", target = char1Loc},
+	{action = "wait", target = 0.5},
+	{action = "touchDown", target = switchMove},
+	{action = "touchUp", target = switchMove},
+	{action = "wait", target = 0.5},
+	{action = "touchDown", target = char5Loc},
+	{action = "touchUp", target = char5Loc}	
+}
+
+manualTouch(actionList)
+
 end
 
 function waitRare()
@@ -357,8 +422,7 @@ elapsedTime = 0
       if(elapsedTime > maxTime) then
         break
       end
-   end
-   print("Battles")
+   end   
 end
 function handleFloor(floor)
    for i, moves in ipairs(floor) do	
@@ -522,7 +586,7 @@ end
 function mapMoveRight(index)
 debugToast("Moving Map Right")
 startLoc = Location(wHalfWay,hHalfWay)
-endLoc = Location(wHalfWay+index,hHalfWay) 
+endLoc = Location(wHalfWay-index,hHalfWay) 
 
 actionList = {{action = "touchDown", target = startLoc},
 	{action = "wait", target = 0.1},
@@ -537,7 +601,7 @@ end
 function mapMoveLeft(index)
 debugToast("Moving Map Left")
 startLoc = Location(wHalfWay,hHalfWay)
-endLoc = Location(wHalfWay-index,hHalfWay) 
+endLoc = Location(wHalfWay+index,hHalfWay) 
 
 actionList = {{action = "touchDown", target = startLoc},
 	{action = "wait", target = 0.1},
